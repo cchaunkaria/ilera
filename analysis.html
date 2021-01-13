@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My ilera</title>
+	<link rel="stylesheet" href="analysis.css">
+</head>
+<body>
+
+
+<div class="main">
+	
+<nav>
+<div class="logo"></div>
+<img src="images/logo.png">
+<div class="nav-links">
+		<ul>
+      <li><a href="ilera.html">Home</a></li>
+                    <li><a href="analysis.html">Analysis</a></li>	
+                    <li><a href="history.html">History</a></li>  
+                    <li><a href="help.html">Help</a></li>
+                    <li><a href="index.html">Log Out</a></li>	
+		</ul>
+
+	</div>	
+</nav>
+
+ <div class="drop-zone">
+    <span class="drop-zone__prompt">Drop file here or click to upload</span>
+    <input id="fileInput" type="file" class="drop-zone__input" onchange="readFile(this.files[0])">
+  </div>
+  
+  <input type="submit" id='as' class="btn" value="analysis">
+
+<center><b><p class ="paragraph" id="op0"></p></b></center>
+<p class ="paragraph" id="op1"></p>
+<p class ="paragraph" id="op2"></p>
+<p class ="paragraph" id="op3"></p>
+<p class ="paragraph" id="op4"></p>
+<p class ="paragraph" id="op5"></p>
+<p class ="paragraph" id="op6"></p>
+<p class ="paragraph" id="op7"></p>
+<p style="color: red"; class="paragraph" id="op8"></p>
+<p class ="paragraph" id="op9"></p>
+<p style="color: red"; class ="paragraph" id="op10"></p>
+<p class ="paragraph" id="op11"></p>
+<p class ="paragraph" id="op12"></p>
+<p class ="paragraph" id="op13"></p>
+<center><b><p class ="paragraph" id="op00"></p></b></b></center>
+<p class ="paragraph" id="op14"></p>
+<center><b><p class ="paragraph" id="op000"></p></b></center>
+<p class ="paragraph" id="op15"></p>
+<p class ="paragraph" id="op16"></p>
+<p class ="paragraph" id="op17"></p>
+<center><b><p class ="paragraph" id="op0000"></p></b></center>
+<p class ="paragraph" id="op18"></p>
+<p class ="paragraph" id="op19"></p>
+
+
+
+
+</div>	
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="/assets/favicon.ico">
+</head>
+
+<body>
+
+  <script>
+  
+       document.getElementById("as").style.display = "none";
+
+        function showStuff() {
+            document.getElementById("as").style.display = "inline";
+        }
+
+        function myFunction() {
+            window.location = "analysis.html"
+        }
+
+        setTimeout(showStuff, 10000);
+
+  	document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
+  const dropZoneElement = inputElement.closest(".drop-zone");
+
+  dropZoneElement.addEventListener("click", (e) => {
+    inputElement.click();
+  });
+
+  inputElement.addEventListener("change", (e) => {
+    if (inputElement.files.length) {
+      updateThumbnail(dropZoneElement, inputElement.files[0]);
+    }
+  });
+
+  dropZoneElement.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZoneElement.classList.add("drop-zone--over");
+  });
+
+  ["dragleave", "dragend"].forEach((type) => {
+    dropZoneElement.addEventListener(type, (e) => {
+      dropZoneElement.classList.remove("drop-zone--over");
+    });
+  });
+
+  dropZoneElement.addEventListener("drop", (e) => {
+    e.preventDefault();
+
+    if (e.dataTransfer.files.length) {
+      inputElement.files = e.dataTransfer.files;
+      updateThumbnail(dropZoneElement, e.dataTransfer.files[0]);
+    }
+
+    dropZoneElement.classList.remove("drop-zone--over");
+  });
+});
+
+/**
+ * Updates the thumbnail on a drop zone element.
+ *
+ * @param {HTMLElement} dropZoneElement
+ * @param {File} file
+ */
+function updateThumbnail(dropZoneElement, file) {
+  let thumbnailElement = dropZoneElement.querySelector(".drop-zone__thumb");
+
+  // First time - remove the prompt
+  if (dropZoneElement.querySelector(".drop-zone__prompt")) {
+    dropZoneElement.querySelector(".drop-zone__prompt").remove();
+  }
+
+  // First time - there is no thumbnail element, so lets create it
+  if (!thumbnailElement) {
+    thumbnailElement = document.createElement("div");
+    thumbnailElement.classList.add("drop-zone__thumb");
+    dropZoneElement.appendChild(thumbnailElement);
+  }
+
+  thumbnailElement.dataset.label = file.name;
+
+  // Show thumbnail for image files
+  if (file.type.startsWith("image/")) {
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      thumbnailElement.style.backgroundImage = `url('${reader.result}')`;
+    };
+  } else {
+    thumbnailElement.style.backgroundImage = null;
+  }
+}
+
+document.querySelector('#fileInput').addEventListener('change', (e) => {
+  readFile(e.target.files[0]);
+});
+
+
+function readFile(file) {
+ 
+ const reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function() {
+  const values = reader.result.split('\n').map(line => (+line.split(' '[2])));
+  
+  if(file.name=="ECG_RAW.txt") {
+
+    document.getElementById("op0").innerHTML =" ECG is the abbreviated term for an electrocardiogram. It is used to record the electrical activity of the heart from different angles to both identify and locate pathology.";
+  
+  var pwaveValue=0;
+  var pwaveLocation=0;
+  var pwaveArray=[];
+  
+  for (var p=0; p<500; p++){
+  
+  pwaveArray[p]= (((values[p]/(Math.pow(2,16)))-0.5)*3000)/1000
+  
+  }
+  
+  pwaveValue=Math.max(...pwaveArray);
+  
+  pwaveLocation = pwaveArray.indexOf(pwaveValue);
+  
+  
+ 
+  var peak1=[];
+ 
+  var limit1=1000;
+  
+  var averageP1 =0;
+  
+  
+  
+  var p1min =0;
+  var p1minLocation =0;
+  var p1minAverage =0;
+  var p1maxAverage =0;
+  
+  var counter1=0;
+
+  for (var i=0; i<limit1; i++){
+  
+  peak1[i] = (((values[i]/(Math.pow(2,16)))-0.5)*3000)/1000
+  
+  averageP1 += peak1[i];
+  
+  counter1 +=1;
+  
+  }
+  
+  averageP1 =  averageP1/counter1
+  
+  var p1=0;
+  p1= Math.max(...peak1)
+  var p1p = peak1.indexOf(p1)
+  
+ 
+ var peakPwave = (pwaveValue/p1)*100;
+ 
+if (peakPwave <=20 && peakPwave >= 13){
+  
+  document.getElementById("op1").innerHTML ="- P waves are present in your readings this indicates Sinus rhythm. P waves represent atrial depolarisation, which is present in healthy individuals. If you have any further questions, please direct them to your medical professional.";
+  
+  }
+  
+  else{
+ document.getElementById("op2").innerHTML ="* P waves represent atrial depolarisation. P waves are not present in your readings this indicates irregular rhythm, it may suggest a diagnosis of atrial fibrillationor, atrioventricular block, or other medical issues. Please contact a medical professional for further diagnosis.";
+  
+  }
+ 
+ p1min= Math.min(...peak1)
+ p1minLocation= peak1.indexOf(p1min)
+  
+  
+ p1maxAverage = p1  - averageP1;
+ 
+ p1minAverage = averageP1 - p1min;
+ 
+ 
+ if ((p1maxAverage/p1minAverage) > 3){
+ 
+  document.getElementById("op3").innerHTML ="- Cardiac axis describes the overall direction of electrical spread within the heart. In healthy individuals, you would expect the cardiac axis to lie between -30° and +90º. Your Axis reading indicates it is type Lead III or II, which have the most positive deflection as they are most closely aligned to the overall direction of electrical spread. If you have any further questions, please direct them to your medical professional.";
+ 
+ }
+ 
+ 
+else{
+
+ document.getElementById("op4").innerHTML = "* Cardiac axis describes the overall direction of electrical spread within the heart. Your Axis reading indicates Right Axis deviation  is type Lead I , which is associated with right ventricular hypertrophy(RAD). RAD is commonly associated with conditions such as pulmonary hypertension, as they cause right ventricular hypertrophy. RAD can, however, be a normal finding in very tall individuals. Please contact a medical professional for further diagnosis.";
+
+}
+
+if ((p1minAverage/p1maxAverage) >1.5){
+
+ document.getElementById("op5").innerHTML ="* Left axis deviation (LAD) involves the direction of depolarisation being distorted to the left (between -30° and -90°). Your Axis reading indicates Left Axis deviation  is type Lead III or II , which is associated with associated with heart conduction abnormalities. Please contact a medical professional for further diagnosis.";
+
+}
+else{
+
+ document.getElementById("op6").innerHTML ="- Left axis deviation (LAD) involves the direction of depolarisation being distorted to the left (between -30° and -90°). Your Axis reading indicates Left Axis deviation is type Lead I, which is the most positive deflection this indicates you have healthy left axis deviation. If you have any further questions, please direct them to your medical professional.";
+
+}
+
+var PRinterval = p1p- pwaveLocation;
+
+if ( PRinterval<=200 && PRinterval >=120){
+
+  document.getElementById("op7").innerHTML = "- The PR interval represents the time taken for electrical activity to move between the atria and the ventricles. Your readings indicate a healthy PR interval of:" +PRinterval+" ms. If you have any further questions, please direct them to your medical professional.";
+  
+}
+else{
+
+ document.getElementById("op8").innerHTML ="* The PR interval represents the time taken for electrical activity to move between the atria and the ventricles. Your readings indicate a Porlonged PR interval of: " +PRinterval+" ms. You may be suffering from acute First Degree Heart Block. Please contact a medical professional for further diagnosis.";
+
+}
+
+
+  var peak2=[];
+ 
+  var limit2=1900;
+  
+  for (var j=0; j<limit2; j++) {
+      
+    peak2[j] = (((values[j]/(Math.pow(2,16)))-0.5)*3000)/1000
+
+}
+  
+  var p2=0;
+  p2= Math.max.apply(null, peak2)
+  var p2p = peak2.indexOf(p2)
+  
+  
+
+ 
+  var peak3=[];
+  var limit3=1000;
+  
+  values.splice(0, 1900);
+
+  for (var z=0; z<limit3; z++){
+  
+  peak3[z] = (((values[z]/(Math.pow(2,16)))-0.5)*3000)/1000
+    
+  }
+  
+  var p3=0;
+  p3= Math.max.apply(null, peak3)
+  var p3p = peak3.indexOf(p3)+1900;
+
+ 
+  var peak4=[];
+  var limit4=1000;
+  let newarray=[];
+  
+  newarray= values.splice(1000, 1000);
+    
+  for (var y=0; y<newarray.length; y++){
+  
+  peak4[y] = (((newarray[y]/(Math.pow(2,16)))-0.5)*3000)/1000
+  
+  }  
+    
+  var p4=0;
+  p4= Math.max(...peak4)
+  var p4p = peak4.indexOf(p4) +2900;
+ 
+ 
+ var rr1 = p2p-p1p;
+ 
+ var rr2 = p4p-p3p;
+
+ var averageRR =((rr1+rr2)/2)
+
+ var BPM =0;
+ 
+ BPM = Math.round((300/(averageRR/150)));
+  
+  var bpmUL=100;
+  var bpmLL=60;
+  
+  if(BPM>bpmUL){
+ 
+ document.getElementById("op9").innerHTML ="* Your readings indicate a Heart Rate BPM of " + BPM + ". An unusually high heart rate may indicate an underlying problem. If your resting heart rate is consistently above 100 beats a minute, You may be suffering from tachycardia. Please contact a medical professional for further diagnosis.";
+ 
+ }
+ 
+ else if(BPM<bpmLL){
+ 
+  document.getElementById("op10").innerHTML ="* Your readings indicate a Heart Rate (BPM) of " + BPM + ". An unusually low heart rate may indicate an underlying problem. If your resting heart rate is consistently below 60 beats a minute, You may be suffering from bradycardia. Please contact a medical professional for further diagnosis.";
+ 
+ }
+  
+  
+ else {
+ 
+document.getElementById("op11").innerHTML ="- Your readings indicate a Heart Rate BPM of " + BPM + ". You are experiencing a healthy normal heart rate. If you have any further questions, please direct them to your medical professional.";
+}
+
+
+var heartRhythm = Math.abs(Math.round((rr1/rr2)));
+
+if ((heartRhythm >= 1 && heartRhythm < 1.2 ) || (heartRhythm > 0.8 && heartRhythm <= 1)){
+    
+document.getElementById("op12").innerHTML ="- The R-R interval begins at the peak of one R wave and ends at the peak of the next R wave. It represents the time between two QRS complexes. Your R-R interval readings indicate that your heart rhythm is Regular. If you have any further questions, please direct them to your medical professional.";
+  
+  }
+  
+  if (heartRhythm != heartRhythm ) {
+  
+document.getElementById("op13").innerHTML ="* The R-R interval begins at the peak of one R wave and ends at the peak of the next R wave. It represents the time between two QRS complexes. Your R-R interval readings indicate that your heart rhythm is iregularly irregular. You may be suffering from heart arrhythmias. Although, Some heart arrhythmias may cause acute bothersome — sometimes even life-threatening — signs and symptoms. Please contact a medical professional for further diagnosis.";
+}
+
+}
+
+else if (file.name=="EMG_Monday2.txt"){
+
+document.getElementById("op00").innerHTML =" Electromyography (EMG) measures muscle response or electrical activity in response to a nerve’s stimulation of the muscle.";
+
+var EMGarray=[]
+
+for(var f=0; f<values.length; f++){ 
+
+EMGarray[f] = (((values[f]/(Math.pow(2,16)))-0.5)*3000)/1009;
+
+}
+
+var maxEMG= Math.max(...EMGarray);
+var pmaxEMG = EMGarray.indexOf(maxEMG);
+
+var minEMG= Math.min(...EMGarray);
+var pminEMG = EMGarray.indexOf(minEMG);
+
+var EMGthreshhold = maxEMG - minEMG;
+
+document.getElementById("op14").innerHTML ="Your readings indicate that your Highest Muscle response is: " + EMGthreshhold + ". Please log this number to monitor your progress over a period. A consistent increase over a period of 1 month inidcates muscle strength gain. Else if a decreasing pattern is observed, this may indicate muscular dystrophy, Polymyositis, or other medical issues . If you have any further questions, please direct them to your medical professional. Depending on your results, your doctor will talk to you about any additional tests or treatments that might be needed.";
+
+}
+
+else if (file.name=="Temperature.txt"){
+
+document.getElementById("op000").innerHTML = " Body temperature is a measure of your body's ability to make and get rid of heat";
+
+var averageTemp=0;
+var counter2=0;
+var roundedTemp=0;
+
+for(var t=0; t<values.length; t++){ 
+
+  averageTemp += values[t]
+  
+  counter2 +=1;
+
+}
+
+averageTemp = averageTemp/counter2;
+roundedTemp= averageTemp.toFixed(3) 
+
+if( roundedTemp >= 36 && roundedTemp <38 ){
+
+
+document.getElementById("op15").innerHTML ="Your readings indicate that your overall Body temperature is " + roundedTemp + " DegC. This is a healthy normal reading. If you have any further questions, please direct them to your medical professional.";
+
+
+}
+
+else if (roundedTemp<36.1){
+
+document.getElementById("op16").innerHTML ="Your readings indicate that your overall Body temperature is " + roundedTemp + " DegC. This is very low, you might be experiencing Hypothermia. Hypothermia is a medical emergency that occurs when your body loses heat faster than it can produce heat, causing a dangerously low body temperature. Please contact a medical professional for further diagnosis.";
+
+
+
+}
+
+else {
+
+document.getElementById("op17").innerHTML ="Your readings indicate that your overall Body temperature is " + roundedTemp + " DegC. This is very high, you might be experiencing fever. A Fever is a temporary increase in your body temperature, often due to an illness. Having a fever is a sign that something out of the ordinary is going on in your body. Note that a fever is a sympton of COVID-19. If you’re concerned about your symptoms, self-monitor your temperature for any changes and consult your health care provide.";
+}
+
+}
+
+else if (file.name=="EDA.txt"){
+
+document.getElementById("op0000").innerHTML = " Electrodermal activity (EDA) is a marker of sympathetic network activity. It reflects the activity of the sympathetic nerve on sweat glands.";
+
+
+
+let EDAarray=[];
+
+
+for (c=0; c<80000; c++){
+
+EDAarray[c]=values[c];
+
+}
+
+var maxActivity = Math.max.apply(null, EDAarray);
+
+var maxLocation = EDAarray.indexOf(maxActivity);
+
+
+var minActivity = Math.max.apply(null, EDAarray);
+var minLocation = Math.min.apply(null, EDAarray);
+
+
+
+var timesH= Math.floor((maxLocation/(60*60))%24)-7.43;
+var timesL= Math.floor((minLocation/(60*60))%24)+2.39;
+
+
+document.getElementById("op18").innerHTML ="- Your readings indicate that your highest sympathetic network activity occured at the " + timesH +"hr of your recording. This period indicates high excitment or anxiety. Please log this information to monitor your progress and patterns over a period. If you continue to observe the same recoccuring pattern this may indicate an activity causing stress. Stress is a major factor in exacerbating present medical conditions or begin to intiating new ones .If you have any other questions, please direct them to your medical professional.";
+
+document.getElementById("op19").innerHTML ="- Your readings indicate that your lowest sympathetic network activity occured at the " + timesL +"hr of your recording. This period indicates boredom or depression. Please log this information to monitor your progress and patterns over a period. If you continue to observe the same recoccuring pattern over an extended period this may indicate that you may be suffering from major depressive disorder (MDD). Major depression is characterized by consistent irritability or feelings of sadness, and is associated with various symptoms, including sleep disturbances, loss of interest, persistent fatigue, reduced appetite, anxiety, and physical aches. Please contact a medical professional for further diagnosis. Depending on your results, your doctor will talk to you about any additional tests or treatments that might be needed.";
+
+
+
+}
+
+
+}
+}
+</script>
+
+
+</body>
+</html>

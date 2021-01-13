@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My ilera</title>
+	<link rel="stylesheet" href="ilera.css">
+</head>
+<body>
+<div class="main">
+	
+<nav>
+	<div class="logo"></div>
+
+<img src="images/logo.png">
+
+
+	<div class="nav-links">
+		<ul>
+			<li><a href="#">Home</a></li>
+		    <li><a href="analysis.html">Analysis</a></li>	
+            <li><a href="history.html">History</a></li>  
+            <li><a href="help.html">Help</a></li>
+            <li><a href="index.html">Log Out</a></li>	
+
+		</ul>
+
+	</div>	
+</nav>
+
+<div class="information">
+<div class="overlay"></div>
+<img src="images/ilera.png" class="mobile">
+<div id="circle">
+	
+<div class="feature one">
+<img src="images/heart.png">
+<div>
+	<h1>Heart (ECG)</h1>
+	<p>Measure your Heart function</p>
+</div>
+</div>
+
+
+<div class="feature two">
+<img src="images/muscle.png">
+<div>
+	<h1>Muscle(EMG)</h1>
+	<p>Measure your Muscle Response</p>
+</div>
+</div>
+
+<div class="feature three">
+<img src="images/stress.png">
+<div>
+	<h1>Stress(EDA)</h1>
+	<p>Measure your Stress Response</p>
+</div>
+</div>
+
+<div class="feature four">
+<img src="images/brain.png">
+<div>
+	<h1>Brain(EEG)</h1>
+	<p>Measure your Brain Activity</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="controls">
+	
+	<img src="images/arrow.png" id="upBtn">
+<h3>Health Measures</h3>
+	<img src="images/arrow.png" id="downBtn">
+</div>
+</div>
+
+<script>
+	
+	var circle = document.getElementById("circle");
+	var upBtn = document.getElementById("upBtn");
+	var downBtn = document.getElementById("downBtn");
+
+    var rotateValue= circle.style.transform;
+    var rotateSum;
+
+    upBtn.onclick = function() {
+    	
+    	rotateSum = rotateValue + "rotate(-90deg)";
+    	circle.style.transform= rotateSum;
+    	rotateValue= rotateSum;
+    }
+
+     downBtn.onclick = function() {
+    	
+    	rotateSum = rotateValue + "rotate(90deg)";
+    	circle.style.transform= rotateSum;
+    	rotateValue= rotateSum;
+    }
+
+
+</script>
+
+
+</body>
+</html>
